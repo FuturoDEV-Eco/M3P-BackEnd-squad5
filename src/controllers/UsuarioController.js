@@ -45,10 +45,16 @@ class UsuarioController {
         });
       }
 
-      const usuarioExistente = await Usuario.findOne({ where: { email, cpf } });
+      const EmailExistente = await Usuario.findOne({ where: { email} });
 
-      if (usuarioExistente) {
-        return res.status(409).json({ error: "Email ou CPF já existentes!" });
+      if (EmailExistente) {
+        return res.status(409).json({ error: "Email ja existente!" });
+      }
+
+      const CpfExistente = await Usuario.findOne({ where: { cpf } });
+
+      if (CpfExistente) {
+        return res.status(409).json({ error: "CPF ja existente!" });
       }
 
       const novoUsuario = await Usuario.create({
