@@ -12,4 +12,8 @@ routes.use("/login", loginRoutes);
 routes.use("/local", validaToken, localRoutes);
 routes.use("/dashboard", dashboardRoutes);
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./doc.swagger.json");
+routes.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 module.exports = routes;
