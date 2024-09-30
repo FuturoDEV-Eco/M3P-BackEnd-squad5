@@ -5,15 +5,32 @@ const regexEmail = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 class UsuarioController {
   async criarUsuario(req, res) {
     try {
-      const { nome, email, senha, cpf, sexo, endereco, dataNascimento } =
-        req.body;
+      const {
+        nome,
+        email,
+        senha,
+        cpf,
+        sexo,
+        cep,
+        logradouro,
+        bairro,
+        numero,
+        localidade,
+        uf,
+        dataNascimento,
+      } = req.body;
       if (
         !nome ||
         !email ||
         !senha ||
         !cpf ||
         !sexo ||
-        !endereco ||
+        !cep ||
+        !logradouro ||
+        !bairro ||
+        !numero ||
+        !localidade ||
+        !uf ||
         !dataNascimento
       ) {
         return res
@@ -24,10 +41,10 @@ class UsuarioController {
       if (!regexEmail.test(email)) {
         return res.status(400).json({ error: "Email inválido!" });
       }
-      if (cpf.length < 11 || cpf.length > 11) {
+      if (cpf.length !== 11) {
         return res.status(400).json({ error: "CPF inválido!" });
       }
-      if (dataNascimento.length < 10 || dataNascimento.length > 10) {
+      if (dataNascimento.length !== 10) {
         return res.status(400).json({ error: "Data inválida!" });
       }
       if (
@@ -44,8 +61,11 @@ class UsuarioController {
             "Senha deve ter entre 8 e 16 caracteres e não pode conter espaços!",
         });
       }
+      if (uf.length !== 2) {
+        return res.status(400).json({ error: "UF inválida!" });
+      }
 
-      const EmailExistente = await Usuario.findOne({ where: { email} });
+      const EmailExistente = await Usuario.findOne({ where: { email } });
 
       if (EmailExistente) {
         return res.status(409).json({ error: "Email ja existente!" });
@@ -56,6 +76,9 @@ class UsuarioController {
       if (CpfExistente) {
         return res.status(409).json({ error: "CPF ja existente!" });
       }
+      if (cep.length !== 8) {
+        return res.status(400).json({ error: "CEP inválido!" });
+      }
 
       const novoUsuario = await Usuario.create({
         nome,
@@ -63,7 +86,12 @@ class UsuarioController {
         senha,
         cpf,
         sexo,
-        endereco,
+        cep,
+        logradouro,
+        bairro,
+        numero,
+        localidade,
+        uf,
         dataNascimento,
       });
       return res.status(201).json(novoUsuario);
@@ -106,22 +134,74 @@ class UsuarioController {
   }
   async editarUsuarioPorId(req, res) {
     try {
-      const { nome, email, senha, cpf, sexo, dataNascimento } = req.body;
+      const {
+        nome,
+        email,
+        senha,
+        cpf,
+        sexo,
+        cep,
+        logradouro,
+        bairro,
+        numero,
+        localidade,
+        uf,
+        dataNascimento,
+      } = req.body;
       const { id } = req.params;
       const usuario = await Usuario.findOne({ where: { id } });
       if (!usuario) {
         return res.status(404).json({ mensagem: "Usuário não encontrado" });
       }
-      if (cpf) {
-        return res
-          .status(400)
-          .json({ mensagem: "Não e permitido alterar o cpf" });
+      if (email) {
+        if (!regexEmail.test(email)) {
+          return res.status(400).json({ mensagem: "Email inválido" });
+        }
       }
+
+      if (dataNascimento) {
+        if (dataNascimento.length !== 10) {
+          return res.status(400).json({ mensagem: "Data inválida" });
+        }
+      }
+
+      if (
+        sexo.toLowerCase() !== "masculino" &&
+        sexo.toLowerCase() !== "feminino"
+      ) {
+        return res.status(400).json({
+          mensagem: "Sexo inválido,precisa informar se é masculino ou feminino",
+        });
+      }
+
+      if (senha) {
+        if (senha.length < 8 || senha.length > 16 || senha.includes(" ")) {
+          return res.status(400).json({
+            error:
+              "Senha deve ter entre 8 e 16 caracteres e não pode conter espaços!",
+          });
+        }
+      }
+      if (cpf) {
+        return res.status(400).json({ error: "não é permitido alterar o CPF" });
+      }
+      if (cep.length !== 8)
+        return res.status(400).json({ error: "Cep invalido" });
+      if (uf.length !== 2)
+        return res.status(400).json({ error: "Uf invalida" });
+
       await usuario.update({
         nome,
         email,
         senha,
+        cpf,
         sexo,
+        cep,
+        logradouro,
+        bairro,
+        numero,
+        localidade,
+        uf,
         dataNascimento,
       });
       return res.status(200).json({ mensagem: "Usuário editado com sucesso" });
@@ -133,14 +213,12 @@ class UsuarioController {
   }
   async deletarUsuarioPorId(req, res) {
     try {
-      //verifica se o usuário existe
       const { id } = req.params;
       const usuario = await Usuario.findOne({ where: { id } });
       if (!usuario) {
         return res.status(404).json({ mensagem: "Usuário não encontrado" });
       }
 
-      //verifica se o usuário possui locais associados a ele para não permitir a deleção
       const locais = await Locais.findAll({
         where: { usuarioId: id },
       });

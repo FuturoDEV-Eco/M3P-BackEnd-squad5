@@ -25,7 +25,6 @@ usuariosRoutes.post(
                 $numero:"123",
                 $localidade:"São Jose",
                 $uf:"SC",
-                $estado:"Santa Catarina",
                 $dataNascimento:"01/01/2000"
             }
         }
@@ -96,7 +95,6 @@ usuariosRoutes.put(
                 $numero:"123",
                 $localidade:"São Jose",
                 $uf:"SC",
-                $estado:"Santa Catarina",
                 $dataNascimento:"01/01/2000"
             }
         }

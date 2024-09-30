@@ -25,13 +25,32 @@ const Usuario = connection.define('usuarios', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    endereco: {
+    cep: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    
-    dataNascimento: {
+    logradouro: {
         type: DataTypes.STRING,
+        allowNull: false
+    },
+    bairro: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    numero: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    localidade: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    uf: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    dataNascimento: {
+        type: DataTypes.DATEONLY,
         allowNull: false
     }
 
