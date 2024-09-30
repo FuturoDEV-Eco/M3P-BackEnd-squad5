@@ -6,9 +6,13 @@ class LocalController {
       let {
         nomeLocal,
         descricaoLocal,
-        cep,
-        endereco,
         TipoResiduoAceito,
+        cep,
+        logradouro,
+        bairro,
+        numero,
+        localidade,
+        uf,
         latitude,
         longitude,
       } = req.body;
@@ -17,7 +21,11 @@ class LocalController {
         !descricaoLocal ||
         !TipoResiduoAceito ||
         !cep ||
-        !endereco ||
+        !logradouro ||
+        !bairro ||
+        !numero ||
+        !localidade ||
+        !uf ||
         !latitude ||
         !longitude
       ) {
@@ -26,6 +34,9 @@ class LocalController {
 
       if (cep.length !== 8) {
         return res.status(400).json({ error: "CEP inválido" });
+      }
+      if (uf.length !== 2) {
+        return res.status(400).json({ error: "UF inválida" });
       }
 
       const local = await Locais.findOne({ where: { latitude } });
@@ -37,7 +48,11 @@ class LocalController {
         nomeLocal,
         descricaoLocal,
         cep,
-        endereco,
+        logradouro,
+        bairro,
+        numero,
+        localidade,
+        uf,
         TipoResiduoAceito,
         latitude,
         longitude,
@@ -137,7 +152,11 @@ class LocalController {
         nomeLocal,
         descricaoLocal,
         cep,
-        endereco,
+        logradouro,
+        bairro,
+        numero,
+        localidade,
+        uf,
         TipoResiduoAceito,
         latitude,
         longitude,
@@ -146,7 +165,11 @@ class LocalController {
         !nomeLocal ||
         !descricaoLocal ||
         !cep ||
-        !endereco ||
+        !logradouro ||
+        !bairro ||
+        !numero ||
+        !localidade ||
+        !uf ||
         !TipoResiduoAceito ||
         !latitude ||
         !longitude
@@ -156,13 +179,19 @@ class LocalController {
 
       if (cep.length !== 8)
         return res.status(400).json({ error: "Cep invalido" });
+      if (uf.length !== 2)
+        return res.status(400).json({ error: "Uf invalida" });
 
       const resultado = await Locais.update(
         {
           nomeLocal,
           descricaoLocal,
           cep,
-          endereco,
+          logradouro,
+          bairro,
+          numero,
+          localidade,
+          uf,
           TipoResiduoAceito,
           latitude,
           longitude,

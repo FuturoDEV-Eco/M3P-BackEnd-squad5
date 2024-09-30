@@ -17,7 +17,31 @@ const Locais = connection.define("locais", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  TipoResiduoAceito: {
+    type: DataTypes.JSON,
+    allowNull: false,
+  },
   cep: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  logradouro: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  bairro: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  numero: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  localidade: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  uf: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -29,21 +53,12 @@ const Locais = connection.define("locais", {
       max: 5,
     },
   },
-  
-  endereco: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  TipoResiduoAceito: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   latitude: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.DECIMAL,
     allowNull: false,
   },
   longitude: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.DECIMAL,
     allowNull: false,
   },
   usuarioId: {
