@@ -11,4 +11,13 @@ dashboardRoutes.get(
     */
 );
 
+dashboardRoutes.get(
+  "/locais",
+  dashboardController.LocaisCadastrados,
+  /*
+        #swagger.tags = ['Dashboard']
+        #swagger.description = 'Listar todos os locais cadastrados'
+    */
+);
+
 module.exports = dashboardRoutes;
