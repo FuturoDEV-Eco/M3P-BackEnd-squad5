@@ -31,9 +31,9 @@ class LocalController {
       ) {
         return res.status(400).json({ error: "Preencha todos os campos" });
       }
-
-      if (cep.length !== 8) {
-        return res.status(400).json({ error: "CEP inválido" });
+      const cepSemCaracteresEspeciais = cep.replace(/[^\d]/g, "");
+      if (cepSemCaracteresEspeciais.length !== 8) {
+        return res.status(400).json({ error: "CEP inválido!" });
       }
       if (uf.length !== 2) {
         return res.status(400).json({ error: "UF inválida" });
@@ -47,7 +47,7 @@ class LocalController {
       await Locais.create({
         nomeLocal,
         descricaoLocal,
-        cep,
+        cep: cepSemCaracteresEspeciais,
         logradouro,
         bairro,
         numero,
@@ -164,29 +164,30 @@ class LocalController {
       if (
         !nomeLocal ||
         !descricaoLocal ||
+        !TipoResiduoAceito ||
         !cep ||
         !logradouro ||
         !bairro ||
         !numero ||
         !localidade ||
         !uf ||
-        !TipoResiduoAceito ||
         !latitude ||
         !longitude
       ) {
         return res.status(400).json({ error: "Preencha todos os campos" });
       }
-
-      if (cep.length !== 8)
-        return res.status(400).json({ error: "Cep invalido" });
-      if (uf.length !== 2)
-        return res.status(400).json({ error: "Uf invalida" });
-
+      const cepSemCaracteresEspeciais = cep.replace(/[^\d]/g, "");
+      if (cepSemCaracteresEspeciais.length !== 8) {
+        return res.status(400).json({ error: "CEP inválido!" });
+      }
+      if (uf.length !== 2) {
+        return res.status(400).json({ error: "UF inválida" });
+      }
       const resultado = await Locais.update(
         {
           nomeLocal,
           descricaoLocal,
-          cep,
+          cep: cepSemCaracteresEspeciais,
           logradouro,
           bairro,
           numero,

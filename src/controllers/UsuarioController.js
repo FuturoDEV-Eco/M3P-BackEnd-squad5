@@ -41,9 +41,23 @@ class UsuarioController {
       if (!regexEmail.test(email)) {
         return res.status(400).json({ error: "Email inválido!" });
       }
-      if (cpf.length !== 11) {
+      const EmailExistente = await Usuario.findOne({ where: { email } });
+
+      if (EmailExistente) {
+        return res.status(409).json({ error: "Email ja existente!" });
+      }
+      const cpfSemCaracteresEspeciais = cpf.replace(/[^\d]/g, "");
+      if (cpfSemCaracteresEspeciais.length !== 11) {
         return res.status(400).json({ error: "CPF inválido!" });
       }
+      const CpfExistente = await Usuario.findOne({
+        where: { cpf: cpfSemCaracteresEspeciais },
+      });
+
+      if (CpfExistente) {
+        return res.status(409).json({ error: "CPF ja existente!" });
+      }
+
       if (dataNascimento.length !== 10) {
         return res.status(400).json({ error: "Data inválida!" });
       }
@@ -65,18 +79,8 @@ class UsuarioController {
         return res.status(400).json({ error: "UF inválida!" });
       }
 
-      const EmailExistente = await Usuario.findOne({ where: { email } });
-
-      if (EmailExistente) {
-        return res.status(409).json({ error: "Email ja existente!" });
-      }
-
-      const CpfExistente = await Usuario.findOne({ where: { cpf } });
-
-      if (CpfExistente) {
-        return res.status(409).json({ error: "CPF ja existente!" });
-      }
-      if (cep.length !== 8) {
+      const cepSemCaracteresEspeciais = cep.replace(/[^\d]/g, "");
+      if (cepSemCaracteresEspeciais.length !== 8) {
         return res.status(400).json({ error: "CEP inválido!" });
       }
 
@@ -84,9 +88,9 @@ class UsuarioController {
         nome,
         email,
         senha,
-        cpf,
+        cpf: cpfSemCaracteresEspeciais,
         sexo,
-        cep,
+        cep: cepSemCaracteresEspeciais,
         logradouro,
         bairro,
         numero,
@@ -148,55 +152,66 @@ class UsuarioController {
         uf,
         dataNascimento,
       } = req.body;
+      if (
+        !nome ||
+        !email ||
+        !senha ||
+        !sexo ||
+        !cep ||
+        !logradouro ||
+        !bairro ||
+        !numero ||
+        !localidade ||
+        !uf ||
+        !dataNascimento
+      ) {
+        return res
+          .status(400)
+          .json({ error: "Todos os campos são obrigatórios!" });
+      }
       const { id } = req.params;
       const usuario = await Usuario.findOne({ where: { id } });
       if (!usuario) {
         return res.status(404).json({ mensagem: "Usuário não encontrado" });
       }
-      if (email) {
-        if (!regexEmail.test(email)) {
-          return res.status(400).json({ mensagem: "Email inválido" });
-        }
+      if (!regexEmail.test(email)) {
+        return res.status(400).json({ error: "Email inválido!" });
+      }
+      if (cpf) {
+        return res.status(400).json({ error: "Não pode atualizar o CPF!" });
       }
 
-      if (dataNascimento) {
-        if (dataNascimento.length !== 10) {
-          return res.status(400).json({ mensagem: "Data inválida" });
-        }
+      if (dataNascimento.length !== 10) {
+        return res.status(400).json({ error: "Data inválida!" });
       }
-
       if (
         sexo.toLowerCase() !== "masculino" &&
         sexo.toLowerCase() !== "feminino"
       ) {
         return res.status(400).json({
-          mensagem: "Sexo inválido,precisa informar se é masculino ou feminino",
+          error: "Sexo inválido,precisa informar se é masculino ou feminino",
         });
       }
-
-      if (senha) {
-        if (senha.length < 8 || senha.length > 16 || senha.includes(" ")) {
-          return res.status(400).json({
-            error:
-              "Senha deve ter entre 8 e 16 caracteres e não pode conter espaços!",
-          });
-        }
+      if (senha.length < 8 || senha.length > 16 || senha.includes(" ")) {
+        return res.status(400).json({
+          error:
+            "Senha deve ter entre 8 e 16 caracteres e não pode conter espaços!",
+        });
       }
-      if (cpf) {
-        return res.status(400).json({ error: "não é permitido alterar o CPF" });
+      if (uf.length !== 2) {
+        return res.status(400).json({ error: "UF inválida!" });
       }
-      if (cep.length !== 8)
-        return res.status(400).json({ error: "Cep invalido" });
-      if (uf.length !== 2)
-        return res.status(400).json({ error: "Uf invalida" });
 
+      const cepSemCaracteresEspeciais = cep.replace(/[^\d]/g, "");
+      if (cepSemCaracteresEspeciais.length !== 8) {
+        return res.status(400).json({ error: "CEP inválido!" });
+      }
       await usuario.update({
         nome,
         email,
         senha,
-        cpf,
         sexo,
-        cep,
+        cep: cepSemCaracteresEspeciais,
         logradouro,
         bairro,
         numero,
