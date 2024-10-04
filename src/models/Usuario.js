@@ -10,7 +10,6 @@ const Usuario = connection.define('usuarios', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
     },
     senha: {
         type: DataTypes.STRING,
