@@ -10,7 +10,7 @@ module.exports = {
       [
         {
           nome: "João",
-          email: "joão@gmail.com",
+          email: "joao@gmail.com",
           senha: hashSync("usuario1",10),
           cpf: "85698725499",
           sexo: "Masculino",
