@@ -6,6 +6,7 @@ module.exports = {
   dialectOptions: {
     ssl: {
       require: true,
+      rejectUnauthorized: true,
     },
   },
   host: process.env.DB_HOST,
